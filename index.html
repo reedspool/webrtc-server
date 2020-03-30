@@ -1,0 +1,18 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+ var socket = io.connect('/');
+ socket.on('news', function (data) {
+     console.log(data);
+     socket.emit('my other event', { my: 'data' });
+ });
+ socket.on('echo', function (data) {
+     console.log("Echo:", data);
+ });
+ socket.on('broadcast', function(data) {
+   console.log('recevieved broadcast from server', data);
+    });
+
+
+
+
+</script>
