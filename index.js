@@ -23,4 +23,9 @@ io.on('connection', function (socket) {
   socket.on("join a room", function (data) {
     socket.join(data);
   });
+
+  socket.on("dm", function (roomName, data)
+  {
+    io.to(roomName).emit(roomName, data);
+  })
 });

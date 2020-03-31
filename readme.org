@@ -18,7 +18,7 @@
 ***** WebSockets - Push and pull messages between server
 **** Express - Server Framework
 *** Dev Environment
-**** Floobits.com for pair programming
+**** ~~Floobits.com for pair programming~~
 **** ZeroTier to connect our computers together
 
 * [X] Goal: Build a web server that Luis and Reed can talk to each other *through* in *real time*
@@ -27,8 +27,17 @@
 - [X] Create a socket.io and express server that echos.  https://socket.io/docs/
 - [X] On the server, for any message on the topic "broadcast", broadcast to all clients
 - [ ] Use socket.io's rooms to send to a particular person
-  - [ ] Each browser join a room that only IT can connect to
+  - [X] Server should listen for join
+  - [ ] When a user joins they can broadcast FROM their own name
+  - [ ] A user can also send a DM to any user by name
+  - [X] Each browser has a button that says join
+  - [X] Input to write your name
+  - [X] Each browser join a rooms by their unique username to receive DMs
+  - [X] Each browser listens for DMs to the room of its username and logs
+  - [X] Hiding the join interace after joining
   - [ ] Other browsers send to the room
+    - [ ] Server should listen for "dm" message on socket
+      - Takes name, message
 - [ ] Don't globally broadcast, send to a particular person
 
 

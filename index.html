@@ -1,18 +1,67 @@
-<script src="/socket.io/socket.io.js"></script>
-<script>
- var socket = io.connect('/');
- socket.on('news', function (data) {
-     console.log(data);
-     socket.emit('my other event', { my: 'data' });
- });
- socket.on('echo', function (data) {
-     console.log("Echo:", data);
- });
- socket.on('broadcast', function(data) {
-   console.log('recevieved broadcast from server', data);
-    });
+<html>
+  <head>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+
+    <div id="joinDiv">
+      <input type="text" id="roomName">
+      <button id="joinButton">join</button>
+    </div>
+
+    <div id="messageDiv" style="display:none;">
+      <input type="text" id="messageText">
+      <button id="messageButton">send</button>
+    </div>
+    <script>
+
+      const socket = io.connect('/');
 
 
+      const joinDiv = document.getElementById("joinDiv");
+      const joinButton = document.getElementById("joinButton");
+      const roomName = document.getElementById("roomName");
+
+      const messageDiv = document.getElementById("messageDiv");
+      const messageButton = document.getElementById("messageButton");
+      const messageText = document.getElementById("messageText");
 
 
-</script>
+      socket.on('broadcast', function(data) {
+        console.log('recevieved broadcast from server', data);
+      });
+
+      joinButton.addEventListener("click",
+        event =>
+        {
+          console.log("Clicked");
+          socket.emit('join a room', roomName.value);
+          socket.on(roomName.value, (data) => {
+            console.log('dm to me', data);
+          });
+          joinDiv.style.display = 'none';
+          messageDiv.style.display = '';
+        });
+
+      messageButton.addEventListener("click",
+        event =>
+        {
+          const message = messageText.value;
+          let matchResult;
+
+          switch (true)
+          {
+            case !!(matchResult = message.match(/\/dm (.*) (.*)/i)):
+              // Send DM
+              socket.emit('dm', matchResult[1], matchResult[2]);
+              break;
+
+            default :
+              console.log(matchResult);
+              socket.emit('broadcast', message);
+              break;
+          }
+        });
+    </script>
+  </body>
+</html>
