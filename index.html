@@ -26,6 +26,16 @@
       const messageButton = document.getElementById("messageButton");
       const messageText = document.getElementById("messageText");
 
+      const config = {
+        servers : {'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]},
+        options : { 'optional': [{'DtlsSrtpKeyAgreement': true}] },
+        sdpConstraints: {
+          optional: [],
+          mandatory: { }
+        }
+      };
+
+      let peerConnection;
 
       socket.on('broadcast', function(data) {
         console.log('recevieved broadcast from server', data);
@@ -34,34 +44,60 @@
       joinButton.addEventListener("click",
         event =>
         {
-          console.log("Clicked");
-          socket.emit('join a room', roomName.value);
-          socket.on(roomName.value, (data) => {
+          console.log("joining a room", roomName.value);
+          socket.emit('join', roomName.value);
+          socket.on('dm', (data) => {
             console.log('dm to me', data);
           });
           joinDiv.style.display = 'none';
           messageDiv.style.display = '';
         });
 
-      messageButton.addEventListener("click",
-        event =>
-        {
+
+      const sendMessage = async event => {
           const message = messageText.value;
           let matchResult;
 
+          if (messageText.value.length == 0) {
+            return;
+          }
+
           switch (true)
           {
-            case !!(matchResult = message.match(/\/dm (.*) (.*)/i)):
+            case !!(matchResult = message.match(/\/dm ([^ ]*) (.*)/i)):
               // Send DM
-              socket.emit('dm', matchResult[1], matchResult[2]);
+              console.log(`Sending DM to ${matchResult[1]}: ${matchResult[2]}`);
+              socket.emit('dm', {to: matchResult[1], type: 'chat', payload: matchResult[2]});
+              break;
+
+            case !!(matchResult = message.match(/\/peer ([^ ]*)/i)):
+              // Send DM
+              console.log(`Sending DM for peer connecting ${matchResult[1]}`);
+              peerConnection = new RTCPeerConnection(config.servers, config.options);
+              const offer = await peerConnection.createOffer(config.sdpConstraints);
+              await peerConnection.setLocalDescription(offer);
+
+              console.log(`Sending peer offer to ${matchResult[1]}: `, offer);
+              socket.emit('dm', {to: matchResult[1], type: 'offer', payload: offer});
               break;
 
             default :
-              console.log(matchResult);
+              console.log(`Broadcasting: ${message}`);
               socket.emit('broadcast', message);
               break;
           }
-        });
+
+          // Clear out the sent message
+          messageText.value = '';
+        };
+
+      messageButton.addEventListener("click", sendMessage);
+      // Anywhere on the page, if we hit Enter
+      document.body.addEventListener("keydown", event => {
+        if (event.keyCode == 13) {
+          sendMessage();
+        }
+      });
     </script>
   </body>
 </html>

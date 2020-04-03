@@ -26,20 +26,42 @@
 - [X] Define a JavaScript environment where we can install packages
 - [X] Create a socket.io and express server that echos.  https://socket.io/docs/
 - [X] On the server, for any message on the topic "broadcast", broadcast to all clients
-- [ ] Use socket.io's rooms to send to a particular person
+- [X] ~~*Log verbosely on the server*~~ [2020-04-03]
+- [X] ~~*Use socket.io's rooms to send to a particular person*~~ [2020-04-03]
   - [X] Server should listen for join
-  - [ ] When a user joins they can broadcast FROM their own name
-  - [ ] A user can also send a DM to any user by name
+  - [X] ~~*When a user joins they can broadcast FROM their own name*~~ [2020-04-03]
+  - [X] ~~*A user can also send a DM to any user by name*~~ [2020-04-03]
+  - [X] ~~*Input for text*~~ [2020-04-03]
+  - [X] ~~*Normal text sends a braodcast*~~ [2020-04-03]
+  - [X] ~~*If first character in text is "/", then the text up to the first space is a command, and the rest of the text is interpreted for that command*~~ [2020-04-03]
+  - [X] ~~*The only command is  "dm", sends a DM to the user whose name is the text up to the NEXT space "/dm name"*~~ [2020-04-03]
+  - [X] ~~*Hit enter while focussed on text emulates button click*~~ [2020-04-03]
+  - [X] ~~*button to send DM*~~ [2020-04-03]
   - [X] Each browser has a button that says join
   - [X] Input to write your name
   - [X] Each browser join a rooms by their unique username to receive DMs
   - [X] Each browser listens for DMs to the room of its username and logs
   - [X] Hiding the join interace after joining
-  - [ ] Other browsers send to the room
-    - [ ] Server should listen for "dm" message on socket
+  - [X] ~~*Other browsers send to the room*~~ [2020-04-03]
+    - [X] ~~*Server should listen for "dm" message on socket*~~ [2020-04-03]
       - Takes name, message
-- [ ] Don't globally broadcast, send to a particular person
+- [X] ~~*Don't globally broadcast, send to a particular person*~~ [2020-04-03]
+- [X] ~~*Cleanup cruft on server*~~ [2020-04-03]
 
 
 * Next goal: Make that server only facilitate connection so that Luis and Reed can talk to eachother *directly*
 ** Signaling is that facilitation
+
+- [ ] Use existing DM but add non-textual messages
+- [ ] UI to connect to another user directly
+  - [ ] Make a /peer command to start this whole process
+  - [ ] Have a RTCPeerConnection to repesent all the information to do with our connection
+    - [ ] Supply a STUN server, that will reflect information about our networking status
+    - [ ] Optionally supply a TURN server, to remain as a middleman for the peer connection
+  - [X] ~~*Send a standard WebRTC Offer to another user*~~ [2020-04-03]
+  - [ ] That user can send an Answer back
+  - [ ] Handle ICE candidate events
+  - [ ] Send text over a peer connection, without intermediary server, verifying peer connect
+
+* Next Big goal: Video
+
